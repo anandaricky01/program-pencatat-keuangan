@@ -20,11 +20,11 @@ use App\Http\Controllers\PengeluaranController;
 
 // ketika web dilaunch pertamakali
 Route::get('/', function () {
-    $pengeluaran = Pengeluaran::all();
+    $pengeluaran = Pengeluaran::paginate(10)->withQueryString();
     $total = Total::all();
     return view('main', [
         'pengeluaran' => $pengeluaran,
-        'total' => $total,
+        'total' => $total[0]->total,
         'no' => 0
     ]);
 });

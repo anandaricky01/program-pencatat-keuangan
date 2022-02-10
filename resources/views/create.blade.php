@@ -2,6 +2,14 @@
 
 @section('container')
     <h1 class="mb-5">Buat Data Anggaran</h1>
+
+    @if(session()->has('gagal'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <p>{{ session('gagal') }}</p>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>    
+    @endif
+
     <form action="/index" method="POST">
         @csrf
         <div class="row">

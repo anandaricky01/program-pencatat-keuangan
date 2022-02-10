@@ -13,14 +13,15 @@ class PengeluaranController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
-        $pengeluaran = Pengeluaran::all();
+        $pengeluaran = Pengeluaran::paginate(10)->withQueryString();
         $total = Total::all();
 
         return view('main', [
             'pengeluaran' => $pengeluaran,
-            'total' => $total,
+            'total' => $total[0]->total,
             'no' => 0
         ]);
     }
@@ -50,18 +51,18 @@ class PengeluaranController extends Controller
             'jenis_kegiatan' => 'required'
         ]);
 
-        // dd($validateData);
-        Pengeluaran::create($validateData);
-
         if($request->jenis_kegiatan == 'Debit'){
             $harga = Total::all('total')[0]->total - $request->debit;
             Total::where('id',1)->update(['total' => $harga]);
-        } else {
+        } else if($request->jenis_kegiatan == 'Kredit') {
             $harga = Total::all('total')[0]->total + $request->debit;
             Total::where('id',1)->update(['total' => $harga]);
+        } else {
+            return redirect('/index/create')->with('gagal','Silahkan masukan jenis kegiatan!');
         }
         
-        return redirect('/index')->with('success','new post has been added!');
+        Pengeluaran::create($validateData);
+        return redirect('/index')->with('success','Data Keuangan Kamu Telah Dicatat!');
     }
 
     /**
